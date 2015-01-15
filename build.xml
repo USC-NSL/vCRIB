@@ -1,0 +1,171 @@
+<project name="CacheFlow" basedir="." default="jar-placement">
+
+    <property name="build" value="build"/>
+    <property name="Partition-Memory-Main-Class" value="edu.usc.enl.cacheflow.scripts.preliminaries.GeneratePartitionsMemoryScript"/>
+
+    <property name="Flows-Main-Class" value="edu.usc.enl.cacheflow.scripts.preliminaries.flow.GenerateFlowsClassbenchRules"/>
+
+    <property name="Placement-Main-Class" value="edu.usc.enl.cacheflow.scripts.vcrib.MultiplePlacementScript"/>
+    <property name="TenantPlacement-Main-Class" value="edu.usc.enl.cacheflow.scripts.MultiplePlacementScriptTenant"/>
+    <property name="Shortest-Main-Class" value="edu.usc.enl.cacheflow.scripts.vmstart.MultipleShortestPathLoadPartition"/>
+    <property name="Classified-Partition-Main-Class" value="edu.usc.enl.cacheflow.scripts.stats.ClassifiedFlowsStatsForRuleGeneration"/>
+    <property name="Replicate-Cluster-Tenant-Main-Class" value="edu.usc.enl.cacheflow.scripts.MultipleReplicateScriptClusterTenant"/>
+    <property name="PostPlace-Main-Class" value="edu.usc.enl.cacheflow.scripts.vcrib.MultiplePostPlaceScriptCluster2"/>
+    <property name="Multiple-Transform-Class" value="edu.usc.enl.cacheflow.scripts.vcrib.transform.MultipleTransformFeasibilityScript"/>
+
+    <!--<property name="Main-Class" value=""/>-->
+    <property name="lib" value="lib"/>
+    <property name="dist" value="dist"/>
+
+    <path id="libs.classpath">
+
+        <pathelement path="${basedir}"/>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <pathconvert property="manifest.classpath" pathsep=" ">
+        <path refid="libs.classpath"/>
+        <mapper>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*.jar" to="lib/*.jar"/>
+            </chainedmapper>
+        </mapper>
+    </pathconvert>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+        <copy todir="${dist}">
+            <fileset dir="${basedir}" includes="lib/*.*" />
+        </copy>
+    </target>
+
+    <target name="compile" depends="init">
+        <!-- Compile the java code -->
+        <javac target="1.7" source="1.7" srcdir="src" destdir="${build}"
+               debug="true" debuglevel="lines,vars,source">
+            <classpath>
+                <path refid="libs.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="jar-flow" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowflow.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Flows-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-partition" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowpartition.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Partition-Memory-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-classfied-partition" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowclassifiedpartition.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Classified-Partition-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-placement" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowplace.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Placement-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-placement-tenant" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowplacetenant.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${TenantPlacement-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-replicate-cluster-tenant" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowreplicatetenant.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Replicate-Cluster-Tenant-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="jar-postplace" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowpostplace.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${PostPlace-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-shortest" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowshortest.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Shortest-Main-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-multi-trans" depends="compile">
+        <!-- Build the jar file -->
+        <jar basedir="${build}" destfile="${dist}/cacheflowmultipletransform.jar">
+            <manifest>
+                <attribute name="Built-By" value="Masoud Moshref Javadi"/>
+                <attribute name="license" value="GNU"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+                <attribute name="Main-Class" value="${Multiple-Transform-Class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jars" depends="jar-postplace,jar-placement,jar-classfied-partition,jar-flow,jar-partition,jar-placement-tenant,jar-replicate-cluster-tenant,jar-shortest,jar-multi-trans">
+
+    </target>
+
+</project>
