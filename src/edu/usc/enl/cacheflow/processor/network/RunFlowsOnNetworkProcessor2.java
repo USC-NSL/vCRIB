@@ -249,7 +249,7 @@ public class RunFlowsOnNetworkProcessor2 {
                     if (newHops == 0) {
                         p.print("," + 0);
                     } else {
-                        p.print("," + entry2.getValue() * (newHops - originalHops));
+                        p.print("," + entry2.getValue() * (newHops - Math.max(0,originalHops)));
                     }
                 }
                 p.println();
